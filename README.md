@@ -1,5 +1,10 @@
 # EcoFlow
 
+## Requirements
+
+- [Node.js](https://nodejs.org/)
+- [Docker](https://www.docker.com/) (for the database)
+
 ## Installation
 
 Install dependencies for both frontend and backend:
@@ -8,21 +13,39 @@ Install dependencies for both frontend and backend:
 npm run install:all
 ```
 
-This will install all required packages for the frontend and backend applications.
-
 ## Running the Application
 
-To run both frontend and backend concurrently in development mode:
+### 1. Start the database
+
+```bash
+docker compose up -d
+```
+
+This starts a PostgreSQL 16 container on port `5432`. The database and schema are created automatically on first run.
+
+### 2. Start the app
 
 ```bash
 npm run dev
 ```
 
-This command will start:
-- Frontend development server
-- Backend development server
+This concurrently starts:
+- Frontend dev server (Vite) — `http://localhost:5173`
+- Backend dev server (Express) — `http://localhost:3000`
 
-Both services will run simultaneously and restart automatically when you make changes to the code.
+Both services restart automatically on code changes.
+
+### Stopping the database
+
+```bash
+docker compose down
+```
+
+To also remove the stored data:
+
+```bash
+docker compose down -v
+```
 
 ## Manual Setup
 
