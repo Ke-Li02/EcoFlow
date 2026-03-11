@@ -30,6 +30,7 @@
     font-weight: bold;
 }
 
-book-btn:hover{
-    background-color: rgb(0, 236, 244);
+.book-btn:hover{
+    transform: translateY(-1px);
+    background-color: rgb(0, 140, 145);
 }
