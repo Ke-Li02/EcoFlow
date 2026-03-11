@@ -1,8 +1,9 @@
-import "./searchbar.css";
+import "../../searchbar.css";
 
 export default function Searchbar(){
     return(
         <div className="search-container">
+            
             <select className="type-dropdown">
                 <option>Type</option>
                 <option>All Types</option>
