@@ -3,6 +3,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import { isLoggedIn } from './store/authStore';
+import HomePage from './pages/HomePage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return isLoggedIn() ? <>{children}</> : <Navigate to="/login" replace />;
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="/home" element={<HomePage/>} />
       </Routes>
     </BrowserRouter>
   );

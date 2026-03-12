@@ -1,0 +1,29 @@
+body{
+    margin:0;
+}
+
+.homepage-container {
+    min-height: 100vh;
+
+    background: linear-gradient(
+    180deg, 
+    #093815 0%,
+    #246f3d 40%,
+    #407955 70%,
+    #69b085 100%);
+}
+
+.header{
+    text-align: center;
+    margin-top: 20px;
+    color:rgb(226, 255, 236);
+    font-size: 60px;
+}
+
+.gallery{
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
