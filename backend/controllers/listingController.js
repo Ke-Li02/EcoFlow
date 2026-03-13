@@ -12,6 +12,15 @@ async function createListingHandler(req, res) {
   }
 }
 
+async function getMyListingsHandler(req, res) {
+  try {
+    const listings = await listingService.findListings(req.user.id);
+    res.status(200).json(listings);
+  } catch (err) {
+    res.status(err.status || 500).json({ message: err.message });
+  }
+}
+
 async function getAvailableListingsHandler(req, res) {
   try {
     const listings = await listingService.getAvailableListings();
@@ -21,5 +30,5 @@ async function getAvailableListingsHandler(req, res) {
   }
 }
 
-module.exports = { createListingHandler, getAvailableListingsHandler };
+module.exports = { createListingHandler, getMyListingsHandler, getAvailableListingsHandler };
 

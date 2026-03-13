@@ -9,7 +9,7 @@ export default function GalleryItem({image,price}: Props){
     return(
         <div className="gallery-item">
             <img src={image} alt="item for rent" />
-            <p className="price">{price}$/hour</p>
+            <p className="price">${price}/hour</p>
             <button className="book-btn">Book Now✅</button>
 
         </div>

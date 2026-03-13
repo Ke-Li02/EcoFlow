@@ -56,6 +56,7 @@
     font-size: 14px;
     outline: none;
     resize: none;
+    font-family: inherit;
 }
 
 .form-group input::placeholder,

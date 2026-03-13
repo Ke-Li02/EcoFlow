@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { VehicleResponse } from '../models/types/listing';
+import type { CreateListingRequest, VehicleResponse } from '../models/types/listing';
 import { getToken } from '../store/authStore';
 
 const api = axios.create({ baseURL: '/api/listing' });
@@ -10,7 +10,20 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-export function getAvailableVehicles(): Promise<VehicleResponse[]> {
+export async function getAvailableVehicles(): Promise<VehicleResponse[]> {
   return api.get<VehicleResponse[]>('/available').then((r) => r.data);
 }
 
+export async function getMyVehicles(): Promise<VehicleResponse[]> {
+  return api.get<VehicleResponse[]>('/my-listings').then((r) => r.data);
+}
+
+export async function createVehicle(data: CreateListingRequest): Promise<VehicleResponse> {
+  const formData = new FormData();
+  formData.append('name', data.name);
+  formData.append('description', data.description);
+  formData.append('address', data.address);
+  formData.append('hourlyRate', String(data.hourlyRate));
+  formData.append('photo', data.photo);
+  return api.post<VehicleResponse>('/create', formData).then((r) => r.data);
+}

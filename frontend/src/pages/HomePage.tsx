@@ -3,11 +3,16 @@ import Searchbar from "../components/common/Searchbar";
 import GalleryItem from "../components/common/GalleryItem";
 import "../homepage.css";
 
-import { useAvailableListings } from "../controllers/hooks/useAvailableListings";
+import { useListing } from "../controllers/hooks/useListing";
+import { useEffect } from "react";
 
 
 export default function HomePage(){
-    const { listings } = useAvailableListings();
+    const { listings, fetchAvailableListings } = useListing();
+
+    useEffect(() => {
+        fetchAvailableListings();
+    }, []);
 
     return(
         <div className="homepage-container">
