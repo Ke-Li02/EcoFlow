@@ -1,30 +1,13 @@
-import Navbar from "../components/common/NavBar";
+import Navbar from "../components/common/Navbar";
 import Searchbar from "../components/common/Searchbar";
 import GalleryItem from "../components/common/GalleryItem";
 import "../homepage.css";
 
-import bike1 from "../assets/bike1.jpg";
-import scooter1 from "../assets/scooter1.jpg";
-import ev1 from "../assets/ev1.jpg";
+import { useAvailableListings } from "../controllers/hooks/useAvailableListings";
 
 
 export default function HomePage(){
-    //hardcoded, change
-    const rentals = [
-        {
-            image: bike1,
-            price: "15"
-        },
-        {
-            image: scooter1,
-            price: "20"
-        },
-        {
-            image: ev1,
-            price: "45"
-        }
-
-    ];
+    const { listings } = useAvailableListings();
 
     return(
         <div className="homepage-container">
@@ -33,11 +16,11 @@ export default function HomePage(){
             <Searchbar/>
 
             <div className="gallery">
-                {rentals.map((item, index) => (
+                {listings.map((item) => (
                     <GalleryItem
-                    key={index}
-                    image={item.image}
-                    price={item.price}
+                    key={item.id}
+                    image={item.photo_path}
+                    price={item.hourly_rate.toString()}
                     />
                 ))}
 
