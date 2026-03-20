@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import Navbar from "../components/common/Navbar";
 import { useListing } from "../controllers/hooks/useListing";
+import { VehicleType, type VehicleTypeValue, Region, type RegionValue } from "../models/types/listing";
 import "../provide.css";
 
 export default function ProvidePage() {
@@ -9,6 +10,8 @@ export default function ProvidePage() {
     const [description, setDescription] = useState("");
     const [address, setAddress] = useState("");
     const [hourlyRate, setHourlyRate] = useState<number | "">("");
+    const [vehicleType, setVehicleType] = useState<VehicleTypeValue | "">("");
+    const [region, setRegion] = useState<RegionValue | "">("");
     const [photo, setPhoto] = useState<File | null>(null);
     const photoInputRef = useRef<HTMLInputElement>(null);
 
@@ -17,24 +20,28 @@ export default function ProvidePage() {
     }, [])
 
     async function handleSubmit() {
-        if (!name || !description || !address || !hourlyRate || !photo) {
+        if (!name || !description || !address || !hourlyRate || !vehicleType || !region || !photo) {
             alert("Please fill in all required fields and add a photo.");
             return;
         }
 
         await createListing({
-            name: name,
-            description: description,
+            name,
+            description,
             available: true,
-            address: address,
-            photo: photo,
-            hourlyRate: hourlyRate
+            address,
+            photo,
+            hourlyRate,
+            vehicleType,
+            region
         });
 
         setName("");
         setDescription("");
         setAddress("");
         setHourlyRate("");
+        setVehicleType("");
+        setRegion("");
         setPhoto(null);
         
         if (photoInputRef.current) photoInputRef.current.value = ""
@@ -68,6 +75,24 @@ export default function ProvidePage() {
                         <input id="provide-price" type="number" placeholder="e.g. 15" value={hourlyRate} onChange={e => setHourlyRate(Number(e.target.value))} />
                     </div>
                     <div className="form-group">
+                        <label htmlFor="provide-type">Vehicle Type</label>
+                        <select id="provide-type" value={vehicleType} onChange={e => setVehicleType(e.target.value as VehicleTypeValue)}>
+                            <option value="">Select a type</option>
+                            {Object.values(VehicleType).map(t => (
+                                <option key={t} value={t}>{t}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="provide-region">Region</label>
+                        <select id="provide-region" value={region} onChange={e => setRegion(e.target.value as RegionValue)}>
+                            <option value="">Select a region</option>
+                            {Object.values(Region).map(r => (
+                                <option key={r} value={r}>{r}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="form-group">
                         <label htmlFor="provide-photo">Photo</label>
                         <input id="provide-photo" type="file" accept="image/*" ref={photoInputRef} onChange={e => setPhoto(e.target.files?.[0] ?? null)} />
                     </div>
@@ -81,7 +106,7 @@ export default function ProvidePage() {
                         <div className="listing-card" key={item.id}>
                             <div className="listing-info">
                                 <span className="listing-title">{item.name}</span>
-                                <span className="listing-price">${item.hourly_rate}/hour</span>
+                                <span className="listing-price">${item.hourlyRate}/hour</span>
                             </div>
                             <span className={`listing-status ${item.available ? "available" : "rented"}`}>
                                 {item.available ? "Available" : "Rented" }

@@ -25,5 +25,7 @@ export async function createVehicle(data: CreateListingRequest): Promise<Vehicle
   formData.append('address', data.address);
   formData.append('hourlyRate', String(data.hourlyRate));
   formData.append('photo', data.photo);
+  formData.append('vehicleType', data.vehicleType);
+  formData.append('region', data.region);
   return api.post<VehicleResponse>('/create', formData).then((r) => r.data);
 }

@@ -5,6 +5,8 @@ export interface CreateListingRequest {
     address: string;
     photo: File;
     hourlyRate: number;
+    vehicleType: string;
+    region: string;
 }
 
 export interface VehicleResponse {
@@ -13,6 +15,39 @@ export interface VehicleResponse {
     description: string;
     available: boolean;
     address: string;
-    photo_path: string;
-    hourly_rate: number;
+    photoPath: string;
+    hourlyRate: number;
+    vehicleType: string;
+    region: string;
 }
+
+export const VehicleType = {
+    Bike: "Bike",
+    EV: "EV",
+    Scooter: "Scooter"
+} as const;
+
+export const Region = {
+    AhuntsicCartierville: "Ahuntsic-Cartierville",
+    Anjou: "Anjou",
+    NDG: "NDG",
+    Lachine: "Lachine",
+    LaSalle: "LaSalle",
+    MercierHochelagaMaisonneuve: "Mercier-Hochelaga Maisonneuve",
+    MontrealNord: "Montreal-Nord",
+    Outremont: "Outremont",
+    Westmount: "Westmount",
+    PierrefondsRoxboro: "Pierrefonds-Roxboro",
+    LePlateauMontRoyal: "Le Plateau-Mont Royal",
+    PointeAuxTrembles: "Pointe aux Trembles",
+    RosemontLaPetitePatrie: "Rosemont La Petite Patrie",
+    SaintLeonard: "Saint-Leonard",
+    SudOuest: "Sud-Ouest",
+    WestIsland: "West-Island",
+    Verdun: "Verdun",
+    VilleMarie: "Ville-Marie",
+    VilleraySaintMichelParcExtension: "Villeray-Saint-Michel-Parc-Extension"
+} as const;
+
+export type VehicleTypeValue = typeof VehicleType[keyof typeof VehicleType];
+export type RegionValue = typeof Region[keyof typeof Region];
