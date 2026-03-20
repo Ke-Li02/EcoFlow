@@ -1,11 +1,11 @@
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import Navbar from "../components/common/Navbar";
 import { useListing } from "../controllers/hooks/useListing";
 import { VehicleType, type VehicleTypeValue, Region, type RegionValue } from "../models/types/listing";
 import "../provide.css";
 
 export default function ProvidePage() {
-    const { myListings, fetchMyListings, createListing } = useListing();
+    const { createListing } = useListing();
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [address, setAddress] = useState("");
@@ -14,10 +14,6 @@ export default function ProvidePage() {
     const [region, setRegion] = useState<RegionValue | "">("");
     const [photo, setPhoto] = useState<File | null>(null);
     const photoInputRef = useRef<HTMLInputElement>(null);
-
-    useEffect(() => {
-        fetchMyListings();
-    }, [])
 
     async function handleSubmit() {
         if (!name || !description || !address || !hourlyRate || !vehicleType || !region || !photo) {
@@ -44,9 +40,7 @@ export default function ProvidePage() {
         setRegion("");
         setPhoto(null);
         
-        if (photoInputRef.current) photoInputRef.current.value = ""
-
-        fetchMyListings();
+        if (photoInputRef.current) photoInputRef.current.value = "";
     }
 
     return (
@@ -97,22 +91,6 @@ export default function ProvidePage() {
                         <input id="provide-photo" type="file" accept="image/*" ref={photoInputRef} onChange={e => setPhoto(e.target.files?.[0] ?? null)} />
                     </div>
                     <button className="submit-btn" onClick={handleSubmit}>📋 Post Listing</button>
-                </div>
-
-                {/* My Listings Section */}
-                <div className="my-listings">
-                    <h3>My Listings</h3>
-                    {myListings.map((item) => (
-                        <div className="listing-card" key={item.id}>
-                            <div className="listing-info">
-                                <span className="listing-title">{item.name}</span>
-                                <span className="listing-price">${item.hourlyRate}/hour</span>
-                            </div>
-                            <span className={`listing-status ${item.available ? "available" : "rented"}`}>
-                                {item.available ? "Available" : "Rented" }
-                            </span>
-                        </div>
-                    ))}
                 </div>
             </div>
         </div>
