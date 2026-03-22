@@ -1,17 +1,223 @@
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+ 
 .transit-page {
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
  
-.transit-map-container {
+.transit-body {
+  display: flex;
   flex: 1;
+  min-height: 0;
+  width: 100%;
   overflow: hidden;
 }
  
-.transit-map-iframe {
+/* ── Side Panel ── */
+.transit-panel {
+  width: 300px;
+  flex-shrink: 0;
+  background: #fafdf9;
+  border-right: 1px solid #c8dfc3;
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow-y: auto;
+}
+ 
+.transit-panel-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2e6e26;
+  margin-bottom: 0.25rem;
+}
+ 
+.transit-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #4a6645;
+  margin-top: 0.5rem;
+}
+ 
+.transit-input {
   width: 100%;
-  height: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1.5px solid #c8dfc3;
+  border-radius: 8px;
+  background: #f0f7ee;
+  font-size: 0.88rem;
+  color: #1e3a1a;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+ 
+.transit-input:focus {
+  border-color: #5aaa4d;
+  box-shadow: 0 0 0 3px rgba(90,170,77,0.15);
+  background: #fff;
+}
+ 
+.transit-hint {
+  font-size: 0.75rem;
+  color: #4a6645;
+  cursor: pointer;
+  margin: 0;
+  transition: color 0.2s;
+}
+ 
+.transit-hint:hover {
+  color: #3d8c33;
+}
+ 
+/* ── Travel Modes ── */
+.transit-modes {
+  display: flex;
+  gap: 0.4rem;
+  margin: 0.25rem 0;
+}
+ 
+.transit-mode-btn {
+  flex: 1;
+  padding: 0.45rem 0.25rem;
+  border: 1.5px solid #c8dfc3;
+  border-radius: 8px;
+  background: #f0f7ee;
+  font-size: 0.78rem;
+  color: #4a6645;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+ 
+.transit-mode-btn:hover {
+  border-color: #7bbf6e;
+  background: #eaf6f2;
+}
+ 
+.transit-mode-btn.active {
+  border-color: #5aaa4d;
+  background: #d4eacf;
+  color: #2e6e26;
+  font-weight: 600;
+}
+ 
+/* ── Go Button ── */
+.transit-go-btn {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  background: #5aaa4d;
+  color: #fff;
   border: none;
-  display: block;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+ 
+.transit-go-btn:hover:not(:disabled) {
+  background: #3d8c33;
+  transform: translateY(-1px);
+}
+ 
+.transit-go-btn:disabled {
+  background: #c8dfc3;
+  color: #8fad88;
+  cursor: not-allowed;
+}
+ 
+/* ── Summary ── */
+.transit-summary {
+  display: flex;
+  justify-content: space-between;
+  background: #d4eacf;
+  border-radius: 8px;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #2e6e26;
+  margin-top: 0.25rem;
+}
+ 
+.transit-error {
+  font-size: 0.82rem;
+  color: #c0392b;
+  background: #fdecea;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  margin-top: 0.25rem;
+}
+ 
+/* ── Map ── */
+.transit-map-container {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  height: calc(100vh - 70px);
+}
+ 
+/* ── Autocomplete ── */
+.transit-autocomplete {
+  position: relative;
+}
+ 
+.transit-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1.5px solid #c8dfc3;
+  border-radius: 8px;
+  list-style: none;
+  margin: 2px 0 0;
+  padding: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  max-height: 180px;
+  overflow-y: auto;
+}
+ 
+.transit-suggestions li {
+  padding: 0.55rem 0.8rem;
+  font-size: 0.83rem;
+  color: #1e3a1a;
+  cursor: pointer;
+  border-bottom: 0.5px solid #eaf6f2;
+}
+ 
+.transit-suggestions li:last-child {
+  border-bottom: none;
+}
+ 
+.transit-suggestions li:hover {
+  background: #d4eacf;
+  color: #2e6e26;
+}
+ 
+/* ── Transit info box ── */
+.transit-info-box {
+  background: #eaf6f2;
+  border: 1.5px solid #c8dfc3;
+  border-radius: 8px;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.82rem;
+  color: #2e6e26;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+ 
+.transit-info-box p {
+  margin: 0;
+  line-height: 1.4;
 }

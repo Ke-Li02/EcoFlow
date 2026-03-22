@@ -5,6 +5,7 @@ import DashboardPage from './pages/DashboardPage';
 import { isLoggedIn } from './store/authStore';
 import HomePage from './pages/HomePage';
 import Transit from './pages/Transit';
+import 'leaflet/dist/leaflet.css';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return isLoggedIn() ? <>{children}</> : <Navigate to="/login" replace />;
