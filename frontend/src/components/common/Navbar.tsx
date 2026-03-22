@@ -7,8 +7,8 @@ export default function Navbar(){
             <h2 className="logo">♻️EcoFlow</h2>
 
             <div className="nav-links">
-                <Link to="/homepage">🏠Homepage</Link>
-                <Link to="/stm">🚉STM Routes</Link>
+                <Link to="/home">🏠Homepage</Link>
+                <Link to="/transit">🚉STM Transit Routes</Link>
                 <Link to="/charging">🔌Charging EV Parking Stations</Link>
                 <Link to="/provide">📋Offer an item to rent</Link>
                 <Link to="/analytics">📊Analytics</Link>
