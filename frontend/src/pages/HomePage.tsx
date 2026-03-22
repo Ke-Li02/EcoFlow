@@ -1,43 +1,42 @@
-import Navbar from "../components/common/NavBar";
+import Navbar from "../components/common/Navbar";
 import Searchbar from "../components/common/Searchbar";
 import GalleryItem from "../components/common/GalleryItem";
 import "../homepage.css";
 
-import bike1 from "../assets/bike1.jpg";
-import scooter1 from "../assets/scooter1.jpg";
-import ev1 from "../assets/ev1.jpg";
+import { useListing } from "../controllers/hooks/useListing";
+import { useEffect, useState } from "react";
 
 
 export default function HomePage(){
-    //hardcoded, change
-    const rentals = [
-        {
-            image: bike1,
-            price: "15"
-        },
-        {
-            image: scooter1,
-            price: "20"
-        },
-        {
-            image: ev1,
-            price: "45"
-        }
+    const { listings, fetchAvailableListings } = useListing();
+    const [vehicleType, setVehicleType] = useState<string | null>(null);
+    const [region, setRegion] = useState<string | null>(null);
 
-    ];
+    function handleSearch(newVehicleType: string | null, newRegion: string | null) {
+        setVehicleType(newVehicleType);
+        setRegion(newRegion);
+    }
+
+    useEffect(() => {
+        fetchAvailableListings();
+    }, []);
 
     return(
         <div className="homepage-container">
             <Navbar/>
             <h2 className="header"> Offered Rentals</h2>
-            <Searchbar/>
+            <Searchbar
+                onSearch={handleSearch}
+            />
 
             <div className="gallery">
-                {rentals.map((item, index) => (
+                {listings.map((item) => (
+                    (vehicleType === null || vehicleType === item.vehicleType) &&
+                    (region === null || region === item.region) &&
                     <GalleryItem
-                    key={index}
-                    image={item.image}
-                    price={item.price}
+                    key={item.id}
+                    image={item.photoPath}
+                    price={item.hourlyRate.toString()}
                     />
                 ))}
 

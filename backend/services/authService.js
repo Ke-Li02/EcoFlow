@@ -26,5 +26,9 @@ async function login(username, password) {
   return { token };
 }
 
-module.exports = { register, login };
+function decodeToken(token) {
+  return jwt.verify(token, process.env.JWT_SECRET);
+}
+
+module.exports = { register, login, decodeToken };
 

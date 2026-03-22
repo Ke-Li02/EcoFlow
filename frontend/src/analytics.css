@@ -1,0 +1,76 @@
+.analytics-container {
+    min-height: 100vh;
+    background: linear-gradient(
+        180deg,
+        #093815 0%,
+        #246f3d 40%,
+        #407955 70%,
+        #69b085 100%
+    );
+}
+
+.analytics-content {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 30px;
+    flex-wrap: wrap;
+}
+
+.my-listings {
+    width: 380px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.my-listings h3 {
+    color: rgb(226, 255, 236);
+    font-size: 24px;
+    margin: 0;
+}
+
+.listing-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.listing-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.listing-title {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.listing-price {
+    color: rgb(200, 240, 215);
+    font-size: 14px;
+}
+
+.listing-status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.available {
+    background: rgba(27, 94, 32, 0.8);
+    color: #c8e6c9;
+}
+
+.rented {
+    background: rgba(127, 0, 0, 0.8);
+    color: #ffcdd2;
+}

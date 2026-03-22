@@ -15,7 +15,7 @@ export function useAuth() {
     try {
       const { token } = await authService.login(data);
       setToken(token);
-      navigate('/dashboard');
+      navigate('/home');
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Login failed';
       setError(msg);
