@@ -4,6 +4,7 @@ import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import { isLoggedIn } from './store/authStore';
 import HomePage from './pages/HomePage';
+import Transit from './pages/Transit';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return isLoggedIn() ? <>{children}</> : <Navigate to="/login" replace />;
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/login" replace />} />
         <Route path="/home" element={<HomePage/>} />
+        <Route path="/transit" element={<Transit/>} />
       </Routes>
     </BrowserRouter>
   );
