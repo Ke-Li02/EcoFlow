@@ -17,6 +17,10 @@ L.Icon.Default.mergeOptions({
 const ORS_KEY         = import.meta.env.VITE_ORS_API_KEY;
 const TRANSITLAND_KEY = import.meta.env.VITE_TRANSITLAND_KEY;
  
+
+// CREDIT/SOURCE TRANSITLAND DOCUMENTATION FOR MOST OF THE CODE INVOLVING DIRECTIONS
+// LEAFLET USED FOR MAPS
+
 const TRAVEL_MODES = [
   { value: "driving-car",     label: "🚗 Drive" },
   { value: "cycling-regular", label: "🚲 Bike"  },
@@ -24,7 +28,7 @@ const TRAVEL_MODES = [
   { value: "bus-metro",       label: "🚌 Bus/Metro" },
 ];
  
-// STM operator ID on Transitland
+// STM operator ID, stuff from Transitland
 const STM_OPERATOR = "o-f25d-socitdetransportdemontral";
  
 function MapClickHandler({ onMapClick }: { onMapClick: (latlng: [number, number]) => void }) {
@@ -44,7 +48,7 @@ interface Stop {
   lon: number;
   routes: string[];
 }
- 
+ //transitland stuff
 export default function Transit() {
   const [origin, setOrigin]             = useState("");
   const [destination, setDestination]   = useState("");
@@ -76,7 +80,7 @@ export default function Transit() {
     } catch { setter([]); }
   }
  
-  // Fetch STM stops near a coordinate from Transitland
+  // fetch STM stops near a coordinate from Transitland
   async function fetchNearbyStops(lat: number, lon: number, radiusMeters = 500): Promise<Stop[]> {
     const res = await fetch(
       `https://transit.land/api/v2/rest/stops?lat=${lat}&lon=${lon}&radius=${radiusMeters}&served_by_operator_onestop_ids=${STM_OPERATOR}&per_page=20&apikey=${TRANSITLAND_KEY}`
@@ -334,9 +338,9 @@ export default function Transit() {
  
             {originCoords && <Marker position={originCoords}><Popup>📍 Origin</Popup></Marker>}
             {destCoords   && <Marker position={destCoords}><Popup>🏁 Destination</Popup></Marker>}
-            {route        && <Polyline positions={route} color="#3d8c33" weight={5} opacity={0.8} />}
+            {route        && <Polyline positions={route} color="#1a73e8" weight={5} opacity={0.8} />}
  
-            {/* STM stops as green circles */}
+            {/* STM stops as green circles-- when you click on them info will display about the bus stop, credit to Transitland */}
             {stops.map(stop => (
               <Circle
                 key={stop.id}
