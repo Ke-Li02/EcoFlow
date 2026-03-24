@@ -1,0 +1,75 @@
+.parking-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
+}
+ 
+.parking-body {
+  flex: 1;
+  min-height: 0;
+  height: calc(100vh - 70px);
+}
+ 
+/* count badge */
+.parking-badge {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0550d1;
+  color: #fff;
+  padding: 0.4rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  pointer-events: none;
+}
+ 
+.parking-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  z-index: 999;
+  background: rgba(240, 247, 238, 0.85);
+}
+ 
+.parking-loading p {
+  color: #2e6e26;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+ 
+.parking-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #d4eacf;
+  border-top-color: #5aaa4d;
+  border-radius: 50%;
+  animation: parking-spin 0.8s linear infinite;
+}
+ 
+@keyframes parking-spin {
+  to { transform: rotate(360deg); }
+}
+ 
+/*Error */
+.parking-error {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fdecea;
+  color: #c0392b;
+  border: 1.5px solid #f5c6c6;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.88rem;
+  z-index: 1000;
+}
