@@ -9,7 +9,7 @@ export default function Navbar(){
             <div className="nav-links">
                 <Link to="/home">🏠Homepage</Link>
                 <Link to="/transit">🚉STM Transit Routes</Link>
-                <Link to="/charging">🔌Charging EV Parking Stations</Link>
+                <Link to="/parking">🔌Charging EV Parking Stations</Link>
                 <Link to="/provide">📋Offer an item to rent</Link>
                 <Link to="/analytics">📊Analytics</Link>
             </div>
