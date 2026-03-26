@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "concurrently -n frontend,backend \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\"",
     "install:all": "npm install --prefix frontend && npm install --prefix backend",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed": "npm run seed --prefix backend"
   },
   "repository": {
     "type": "git",

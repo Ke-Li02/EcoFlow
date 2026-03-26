@@ -1,20 +1,26 @@
+import { useRef } from "react";
 import "../../searchbar.css";
 
-export default function Searchbar(){
+interface SearchbarProps {
+  onSearch: (vehicleType: string | null, region: string | null) => void;
+}
+
+export default function Searchbar({ onSearch }: Readonly<SearchbarProps>){
+    const vehicleTypeRef = useRef<HTMLSelectElement>(null);
+    const regionRef = useRef<HTMLSelectElement>(null);
+
     return(
         <div className="search-container">
             
-            <select className="type-dropdown">
-                <option>Type</option>
-                <option>All Types</option>
-                <option>Bike🚲</option>
-                <option>EV🚗</option>
-                <option>Scooter🛴</option>
+            <select className="type-dropdown" ref={vehicleTypeRef}>
+                <option value="">All Types</option>
+                <option>Bike</option>
+                <option>EV</option>
+                <option>Scooter</option>
             </select>
 
-            <select className="region-dropdown">
-                <option>Region</option>
-                <option>All Regions</option>
+            <select className="region-dropdown" ref={regionRef}>
+                <option value="">All Regions</option>
                 <option>Ahuntsic-Cartierville</option>
                 <option>Anjou</option>
                 <option>NDG</option>
@@ -33,10 +39,10 @@ export default function Searchbar(){
                 <option>West-Island</option>
                 <option>Verdun</option>
                 <option>Ville-Marie</option>
-                <option>Villeray-Saint Michel-Par Extension</option>
+                <option>Villeray-Saint-Michel-Parc-Extension</option>
             </select>
 
-            <button className="search-btn">Search🔍</button>
+            <button className="search-btn" onClick={() => onSearch(vehicleTypeRef.current?.value || null, regionRef.current?.value || null)}>Search🔍</button>
 
 
         </div>
