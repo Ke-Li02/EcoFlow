@@ -46,6 +46,12 @@ To also remove the stored data:
 ```bash
 docker compose down -v
 ```
+## Frontend Leaflet Setup for Transit Maps *MANDATORY
+```
+cd frontend
+npm install leaflet react-leaflet
+npm install -D @types/leaflet
+```
 
 ## Manual Setup
 
@@ -57,6 +63,7 @@ cd frontend
 npm install
 npm run dev
 ```
+
 
 ### Backend
 ```bash
