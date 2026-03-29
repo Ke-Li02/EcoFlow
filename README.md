@@ -23,7 +23,24 @@ docker compose up -d
 
 This starts a PostgreSQL 16 container on port `5432`. The database and schema are created automatically on first run.
 
-### 2. Start the app
+### 2. Seed the database (optional sample data)
+
+```bash
+npm run seed
+```
+
+This runs the backend seed script from the project root.
+
+Backend-only equivalent:
+
+```bash
+cd backend
+npm run seed
+```
+
+Note: the seed script drops and recreates the `ownerships`, `vehicles`, and `users` tables before inserting sample data.
+
+### 3. Start the app
 
 ```bash
 npm run dev
