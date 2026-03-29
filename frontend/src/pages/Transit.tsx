@@ -2,6 +2,8 @@ import { useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMapEvents, Circle } from "react-leaflet";
 import L from "leaflet";
 import Navbar from "../components/common/Navbar";
+import { getDirections, getNearbyTransitStops, searchSuggestions } from "../services/mapService";
+import type { PlaceSuggestion, TransitStop } from "../models/types/map";
 import "../transit.css";
  
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
@@ -28,60 +30,9 @@ const TRAVEL_MODES = [
   { value: "bus-metro",       label: "🚌 Bus/Metro" },
 ];
  
-// STM operator ID, stuff from Transitland
-const STM_OPERATOR = "o-f25d-socitdetransportdemontral";
- 
 function MapClickHandler({ onMapClick }: { onMapClick: (latlng: [number, number]) => void }) {
   useMapEvents({ click(e) { onMapClick([e.latlng.lat, e.latlng.lng]); } });
   return null;
-}
- 
-interface Suggestion {
-  label: string;
-  coords: [number, number];
-}
-
-interface GeoFeature {
-  properties: {
-    label: string;
-  };
-  geometry: {
-    coordinates: [number, number];
-  };
-}
-
-interface TransitStop {
-  onestop_id: string;
-  stop_name: string;
-  geometry: {
-    coordinates: [number, number];
-  };
-  route_stops?: Array<{
-    route?: {
-      route_short_name: string;
-    };
-  }>;
-}
-
-interface GeocodingResponse {
-  features: GeoFeature[];
-}
-
-interface TransitResponse {
-  stops: TransitStop[];
-}
-
-interface Suggestion {
-  label: string;
-  coords: [number, number];
-}
- 
-interface Stop {
-  id: string;
-  name: string;
-  lat: number;
-  lon: number;
-  routes: string[];
 }
  //transitland stuff
 export default function Transit() {
@@ -102,39 +53,28 @@ export default function Transit() {
   const [summary, setSummary]           = useState<{ distance: string; duration: string } | null>(null);
   const [error, setError]               = useState("");
   const [loading, setLoading]           = useState(false);
-  const [originSuggestions, setOriginSuggestions] = useState<Suggestion[]>([]);
-  const [destSuggestions, setDestSuggestions]     = useState<Suggestion[]>([]);
-  const [stops, setStops]               = useState<Stop[]>([]);
+  const [originSuggestions, setOriginSuggestions] = useState<PlaceSuggestion[]>([]);
+  const [destSuggestions, setDestSuggestions]     = useState<PlaceSuggestion[]>([]);
+  const [stops, setStops]               = useState<TransitStop[]>([]);
   const [transitInfo, setTransitInfo]   = useState<string[]>([]);
  
-  async function fetchSuggestions(text: string, setter: (s: Suggestion[]) => void) {
+  async function fetchSuggestions(text: string, setter: (s: PlaceSuggestion[]) => void) {
     if (text.length < 3) { setter([]); return; }
     try {
-      const res = await fetch(
-        `https://api.openrouteservice.org/geocode/autocomplete?api_key=${ORS_KEY}&text=${encodeURIComponent(text)}&boundary.country=CA&size=5`
-      );
-      const data: GeocodingResponse = await res.json();
-      const suggestions: Suggestion[] = (data.features || []).map((f: GeoFeature) => ({
-        label: f.properties.label,
-        coords: [f.geometry.coordinates[1], f.geometry.coordinates[0]] as [number, number],
-      }));
+      if (!ORS_KEY) {
+        throwError("Missing ORS key. Set VITE_ORS_API_KEY in frontend .env.");
+      }
+      const suggestions = await searchSuggestions(text, ORS_KEY);
       setter(suggestions);
     } catch { setter([]); }
   }
  
   // fetch STM stops near a coordinate from Transitland
-  async function fetchNearbyStops(lat: number, lon: number, radiusMeters = 500): Promise<Stop[]> {
-    const res = await fetch(
-      `https://transit.land/api/v2/rest/stops?lat=${lat}&lon=${lon}&radius=${radiusMeters}&served_by_operator_onestop_ids=${STM_OPERATOR}&per_page=20&apikey=${TRANSITLAND_KEY}`
-    );
-    const data: TransitResponse = await res.json();
-    return (data.stops || []).map((s: TransitStop) => ({
-      id: s.onestop_id,
-      name: s.stop_name,
-      lat: s.geometry.coordinates[1],
-      lon: s.geometry.coordinates[0],
-      routes: (s.route_stops || []).map((r) => r.route?.route_short_name).filter(Boolean) as string[],
-    }));
+  async function fetchNearbyStops(lat: number, lon: number, radiusMeters = 500): Promise<TransitStop[]> {
+    if (!TRANSITLAND_KEY) {
+      throwError("Missing Transitland key. Set VITE_TRANSITLAND_KEY in frontend .env.");
+    }
+    return getNearbyTransitStops(lat, lon, TRANSITLAND_KEY, radiusMeters);
   }
  
   // Fetch STM routes that serve both origin and destination areas
@@ -224,26 +164,23 @@ export default function Transit() {
     // All other modes → use ORS
     setLoading(true);
     try {
-      const res = await fetch(
-        `https://api.openrouteservice.org/v2/directions/${mode}?api_key=${ORS_KEY}&start=${originCoords[1]},${originCoords[0]}&end=${destCoords[1]},${destCoords[0]}`
-      );
-      const data = await res.json();
-      if (!data.features?.length) {
+      if (!ORS_KEY) {
+        throwError("Missing ORS key. Set VITE_ORS_API_KEY in frontend .env.");
+      }
+
+      const routeResult = await getDirections(mode, originCoords, destCoords, ORS_KEY);
+      if (!routeResult) {
         throwError("No route found between those locations.");
       }
 
-      const seg = data.features[0].properties.segments[0];
-      const km  = (seg.distance / 1000).toFixed(1);
-      const min = Math.round(seg.duration / 60);
+      const km  = (routeResult.distanceMeters / 1000).toFixed(1);
+      const min = Math.round(routeResult.durationSeconds / 60);
       setSummary({
         distance: `${km} km`,
         duration: min >= 60 ? `${Math.floor(min / 60)}h ${min % 60}m` : `${min} min`,
       });
- 
-      const coords: [number, number][] = data.features[0].geometry.coordinates.map(
-        ([lng, lat]: [number, number]) => [lat, lng]
-      );
-      setRoute(coords);
+
+      setRoute(routeResult.points);
     } catch (e: unknown) {
       const errorMessage = e instanceof Error ? e.message : "Something went wrong. Please try again.";
       setError(errorMessage);
