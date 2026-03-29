@@ -36,14 +36,16 @@ export function useListing() {
     }
   }
 
-  async function createListing(data: CreateListingRequest) {
+  async function createListing(data: CreateListingRequest): Promise<boolean> {
     setLoading(true);
     setError(null);
     try {
       await listingService.createVehicle(data);
+      return true;
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Failed to create listing';
       setError(msg);
+      return false;
     } finally {
       setLoading(false);
     }
