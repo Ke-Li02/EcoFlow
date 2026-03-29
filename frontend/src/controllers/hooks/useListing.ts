@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import * as listingService from '../../services/listingService';
-import type { VehicleResponse, CreateListingRequest } from '../../models/types/listing';
+import type { VehicleResponse, CreateListingRequest, ListingCommand, ListingBatchResponse } from '../../models/types/listing';
 
 export function useListing() {
   const [listings, setListings] = useState<VehicleResponse[]>([]);
@@ -49,5 +49,19 @@ export function useListing() {
     }
   }
 
-  return { listings, myListings, loading, error, fetchAvailableListings, fetchMyListings, createListing };
+  async function executeBatchCommands(operations: ListingCommand[]): Promise<ListingBatchResponse | null> {
+    setLoading(true);
+    setError(null);
+    try {
+      return await listingService.executeListingCommands(operations);
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Failed to execute listing commands';
+      setError(msg);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return { listings, myListings, loading, error, fetchAvailableListings, fetchMyListings, createListing, executeBatchCommands };
 }

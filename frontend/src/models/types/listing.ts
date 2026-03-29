@@ -21,6 +21,40 @@ export interface VehicleResponse {
     region: string;
 }
 
+export interface AddListingCommandPayload {
+    name: string;
+    description: string;
+    address: string;
+    photoPath: string;
+    hourlyRate: number;
+    vehicleType: string;
+    region: string;
+    available?: boolean;
+}
+
+export interface UpdateListingCommandPayload {
+    vehicleId: number;
+    updates: Partial<Omit<VehicleResponse, 'id'>>;
+}
+
+export interface RemoveListingCommandPayload {
+    vehicleId: number;
+}
+
+export type ListingCommand =
+    | { type: 'add'; payload: AddListingCommandPayload }
+    | { type: 'update'; payload: UpdateListingCommandPayload }
+    | { type: 'remove'; payload: RemoveListingCommandPayload };
+
+export interface ListingBatchResponse {
+    processed: number;
+    results: Array<{
+        type: 'add' | 'update' | 'remove';
+        vehicle?: VehicleResponse;
+        vehicleId?: number;
+    }>;
+}
+
 export const VehicleType = {
     Bike: "Bike",
     EV: "EV",
