@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
-import Navbar from "../components/common/NavBar";
+import Navbar from "../components/common/Navbar";
 import "../parking.css";
  
 // ─────────────────────────────────────────────
@@ -14,7 +14,7 @@ import "../parking.css";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+delete ((L.Icon.Default.prototype as unknown) as Record<string, unknown>)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconUrl: markerIcon,
   iconRetinaUrl: markerIcon2x,
@@ -64,7 +64,26 @@ interface Station {
   connectors: string;
   access: string;
 }
- 
+
+interface OverpassElement {
+  id: number;
+  lat?: number;
+  lon?: number;
+  center?: {
+    lat: number;
+    lon: number;
+  };
+  tags?: {
+    name?: string;
+    operator?: string;
+    [key: string]: string | undefined;
+  };
+}
+
+interface OverpassResponse {
+  elements: OverpassElement[];
+}
+
 // ─────────────────────────────────────────────
 // OVERPASS API QUERY
 // Overpass is a read-only API for OpenStreetMap data.
@@ -99,6 +118,13 @@ export default function Parking() {
   // The empty [] dependency array means "only run this on mount".
   // This is where we fetch the charging station data from Overpass.
   // ─────────────────────────────────────────────
+  // ─────────────────────────────────────────────
+  // HELPER FUNCTIONS
+  // ─────────────────────────────────────────────
+  function throwError(message: string): never {
+    throw new Error(message);
+  }
+
   useEffect(() => {
     async function fetchStations() {
       try {
@@ -107,17 +133,19 @@ export default function Parking() {
           method: "POST",
           body: OVERPASS_QUERY,
         });
- 
+
         // If the server returned a non-OK HTTP status (e.g. 500), throw an error
-        if (!res.ok) throw new Error(`Server error: ${res.status}`);
- 
-        const data = await res.json();
- 
+        if (!res.ok) {
+          throwError(`Server error: ${res.status}`);
+        }
+
+        const data: OverpassResponse = await res.json();
+
         // Check that we actually got elements back
         if (!data.elements || data.elements.length === 0) {
-          throw new Error("No charging stations found in this area.");
+          throwError("No charging stations found in this area.");
         }
- 
+
         // ─────────────────────────────────────────────
         // DATA TRANSFORMATION
         // The Overpass API returns raw OSM data which isn't
@@ -131,34 +159,39 @@ export default function Parking() {
         // - We filter out any elements missing coordinates at the end
         // ─────────────────────────────────────────────
         const parsed: Station[] = data.elements
-          .map((el: any) => {
+          .map((el: OverpassElement): Station | null => {
             const tags = el.tags || {};
- 
+
             // Nodes have lat/lon directly; ways have a center object
             const lat = el.lat ?? el.center?.lat;
             const lon = el.lon ?? el.center?.lon;
- 
+
+            // Skip elements missing coordinates
+            if (lat == null || lon == null) {
+              return null;
+            }
+
             return {
               id:   el.id,
               lat,
               lon,
- 
+
               // Use the station name, or fall back to the operator name,
               // or a generic label if neither exists
               name: tags.name || tags.operator || "EV Charging Station",
- 
+
               // Build a readable address from individual OSM address tags
               address: [
                 tags["addr:housenumber"],
                 tags["addr:street"],
                 tags["addr:city"],
               ].filter(Boolean).join(" ") || "Montreal, QC",
- 
+
               network:  tags.network || tags.operator || "Unknown network",
- 
+
               // capacity = total number of charging points at this station
               sockets:  tags.capacity || tags["socket:count"] || "N/A",
- 
+
               // OSM stores connector types as individual tags like socket:type2=2
               // We check each known connector type and build a readable list
               connectors: [
@@ -168,20 +201,20 @@ export default function Parking() {
                 tags["socket:tesla_supercharger"] && "Tesla",
                 tags["socket:type1"]              && "Type 1",
               ].filter(Boolean).join(", ") || "See on-site",
- 
+
               // Determine if the station is free or paid
               access: tags.fee === "yes" ? "Paid" : tags.fee === "no" ? "Free" : "Check on-site",
             };
           })
-          // Remove any elements that are missing coordinates
-          .filter((s: Station) => s.lat != null && s.lon != null);
- 
+          .filter((s): s is Station => s !== null);
+
         setStations(parsed);
  
-      } catch (e: any) {
+      } catch (e: unknown) {
         // Only show the error if we have no stations at all
         // This prevents a false error when data loads but a minor issue occurs
-        setError(e.message || "Could not load charging stations. Please try again later.");
+        const errorMessage = e instanceof Error ? e.message : "Could not load charging stations. Please try again later.";
+        setError(errorMessage);
       } finally {
         // Always stop the loading spinner, whether we succeeded or failed
         setLoading(false);

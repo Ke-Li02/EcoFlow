@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMapEvents, Circle } from "react-leaflet";
 import L from "leaflet";
-import Navbar from "../components/common/NavBar";
+import Navbar from "../components/common/Navbar";
 import "../transit.css";
  
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+delete ((L.Icon.Default.prototype as unknown) as Record<string, unknown>)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconUrl: markerIcon,
   iconRetinaUrl: markerIcon2x,
@@ -40,6 +40,41 @@ interface Suggestion {
   label: string;
   coords: [number, number];
 }
+
+interface GeoFeature {
+  properties: {
+    label: string;
+  };
+  geometry: {
+    coordinates: [number, number];
+  };
+}
+
+interface TransitStop {
+  onestop_id: string;
+  stop_name: string;
+  geometry: {
+    coordinates: [number, number];
+  };
+  route_stops?: Array<{
+    route?: {
+      route_short_name: string;
+    };
+  }>;
+}
+
+interface GeocodingResponse {
+  features: GeoFeature[];
+}
+
+interface TransitResponse {
+  stops: TransitStop[];
+}
+
+interface Suggestion {
+  label: string;
+  coords: [number, number];
+}
  
 interface Stop {
   id: string;
@@ -50,6 +85,13 @@ interface Stop {
 }
  //transitland stuff
 export default function Transit() {
+  // ─────────────────────────────────────────────
+  // HELPER FUNCTIONS
+  // ─────────────────────────────────────────────
+  function throwError(message: string): never {
+    throw new Error(message);
+  }
+
   const [origin, setOrigin]             = useState("");
   const [destination, setDestination]   = useState("");
   const [mode, setMode]                 = useState("driving-car");
@@ -71,8 +113,8 @@ export default function Transit() {
       const res = await fetch(
         `https://api.openrouteservice.org/geocode/autocomplete?api_key=${ORS_KEY}&text=${encodeURIComponent(text)}&boundary.country=CA&size=5`
       );
-      const data = await res.json();
-      const suggestions: Suggestion[] = (data.features || []).map((f: any) => ({
+      const data: GeocodingResponse = await res.json();
+      const suggestions: Suggestion[] = (data.features || []).map((f: GeoFeature) => ({
         label: f.properties.label,
         coords: [f.geometry.coordinates[1], f.geometry.coordinates[0]] as [number, number],
       }));
@@ -85,13 +127,13 @@ export default function Transit() {
     const res = await fetch(
       `https://transit.land/api/v2/rest/stops?lat=${lat}&lon=${lon}&radius=${radiusMeters}&served_by_operator_onestop_ids=${STM_OPERATOR}&per_page=20&apikey=${TRANSITLAND_KEY}`
     );
-    const data = await res.json();
-    return (data.stops || []).map((s: any) => ({
+    const data: TransitResponse = await res.json();
+    return (data.stops || []).map((s: TransitStop) => ({
       id: s.onestop_id,
       name: s.stop_name,
       lat: s.geometry.coordinates[1],
       lon: s.geometry.coordinates[0],
-      routes: (s.route_stops || []).map((r: any) => r.route?.route_short_name).filter(Boolean),
+      routes: (s.route_stops || []).map((r) => r.route?.route_short_name).filter(Boolean) as string[],
     }));
   }
  
@@ -112,7 +154,7 @@ export default function Transit() {
       ]);
  
       if (!originStops.length && !destStops.length) {
-        throw new Error("No STM stops found near your origin or destination. Try a different location.");
+        throwError("No STM stops found near your origin or destination. Try a different location.");
       }
  
       // Combine all stops for display
@@ -153,8 +195,9 @@ export default function Transit() {
       const min = Math.round(distM / 250); // ~15 km/h average bus speed estimate
       setSummary({ distance: `${km} km`, duration: min >= 60 ? `${Math.floor(min/60)}h ${min%60}m` : `${min} min` });
  
-    } catch (e: any) {
-      setError(e.message || "Could not load transit data. Please try again.");
+    } catch (e: unknown) {
+      const errorMessage = e instanceof Error ? e.message : "Could not load transit data. Please try again.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -185,8 +228,10 @@ export default function Transit() {
         `https://api.openrouteservice.org/v2/directions/${mode}?api_key=${ORS_KEY}&start=${originCoords[1]},${originCoords[0]}&end=${destCoords[1]},${destCoords[0]}`
       );
       const data = await res.json();
-      if (!data.features?.length) throw new Error("No route found between those locations.");
- 
+      if (!data.features?.length) {
+        throwError("No route found between those locations.");
+      }
+
       const seg = data.features[0].properties.segments[0];
       const km  = (seg.distance / 1000).toFixed(1);
       const min = Math.round(seg.duration / 60);
@@ -199,8 +244,9 @@ export default function Transit() {
         ([lng, lat]: [number, number]) => [lat, lng]
       );
       setRoute(coords);
-    } catch (e: any) {
-      setError(e.message || "Something went wrong. Please try again.");
+    } catch (e: unknown) {
+      const errorMessage = e instanceof Error ? e.message : "Something went wrong. Please try again.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

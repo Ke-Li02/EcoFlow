@@ -20,7 +20,10 @@ app.use('/public/uploads', express.static(path.join(__dirname, 'public/uploads')
 
 async function main() {
   try {
-    await Promise.all([createUsersTable(), createVehiclesTable(), createOwnershipsTable()]);
+    await createUsersTable();
+    await createVehiclesTable();
+    await createOwnershipsTable();
+
     app.listen(port, () => {
       console.log(`Server listening on port ${port}`);
     });
