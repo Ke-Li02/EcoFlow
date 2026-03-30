@@ -5,6 +5,7 @@ import ProvidePage from './pages/ProvidePage';
 import HomePage from './pages/HomePage';
 import ListingDetailsPage from './pages/ListingDetailsPage';
 import BookingPage from './pages/BookingPage';
+import MyRentalsPage from './pages/MyRentalsPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import Transit from './pages/Transit';
 import Parking from './pages/Parking';
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/home" element={<RouteGuard guardType="auth"><HomePage /></RouteGuard>} />
         <Route path="/listing/:id" element={<RouteGuard guardType="auth"><ListingDetailsPage /></RouteGuard>} />
         <Route path="/booking/:id" element={<RouteGuard guardType="auth"><BookingPage /></RouteGuard>} />
+        <Route path="/my-rentals" element={<RouteGuard guardType="auth"><MyRentalsPage /></RouteGuard>} />
         <Route path="/provide" element={<RouteGuard guardType="auth"><ProvidePage /></RouteGuard>} />
         <Route path="/analytics" element={<RouteGuard guardType="admin"><AnalyticsPage /></RouteGuard>} />
         <Route path="*" element={<Navigate to="/login" replace />} />

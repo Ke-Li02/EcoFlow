@@ -2,6 +2,7 @@ require('dotenv').config();
 const { createUsersTable } = require('../models/userModel');
 const { createVehiclesTable } = require('../models/vehicleModel');
 const { createOwnershipsTable } = require('../models/ownershipModel');
+const { createRentalsTable } = require('../models/rentalModel');
 const authService = require('../services/authService');
 const listingService = require('../services/listingService');
 const pool = require('../services/db');
@@ -9,6 +10,7 @@ const pool = require('../services/db');
 async function seed() {
   try {
     // drop tables
+    await pool.query('DROP TABLE IF EXISTS rentals CASCADE');
     await pool.query('DROP TABLE IF EXISTS ownerships CASCADE');
     await pool.query('DROP TABLE IF EXISTS vehicles CASCADE');
     await pool.query('DROP TABLE IF EXISTS users CASCADE');
@@ -17,6 +19,7 @@ async function seed() {
     await createUsersTable();
     await createVehiclesTable();
     await createOwnershipsTable();
+    await createRentalsTable();
 
     // create users
     const user1 = await authService.register('user', '123', false);

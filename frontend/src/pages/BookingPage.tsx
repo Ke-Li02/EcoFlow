@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Navbar from '../components/common/Navbar';
 import { useListing } from '../controllers/hooks/useListing';
+import { useRental } from '../controllers/hooks/useRental';
 import type { VehicleResponse } from '../models/types/listing';
 import { getListingImageSrc } from '../utils/listingMedia';
 import '../booking.css';
@@ -16,6 +17,7 @@ export default function BookingPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const { listings, loading, error, fetchAvailableListings } = useListing();
+  const { createMyRental } = useRental();
 
   const [startDateTime, setStartDateTime] = useState('');
   const [endDateTime, setEndDateTime] = useState('');
@@ -86,12 +88,25 @@ export default function BookingPage() {
     return null;
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const nextError = validateForm();
 
     if (nextError) {
       setFormError(nextError);
+      setPaymentSuccess(false);
+      return;
+    }
+
+    if (!listing) {
+      setFormError('Listing not found.');
+      setPaymentSuccess(false);
+      return;
+    }
+
+    const result = await createMyRental(listing, startDateTime, endDateTime, estimatedTotal);
+    if (!result.ok) {
+      setFormError(result.error ?? 'Failed to save your booking.');
       setPaymentSuccess(false);
       return;
     }
@@ -231,6 +246,11 @@ export default function BookingPage() {
 
               <div className="booking-actions">
                 <button type="submit" className="booking-submit-btn">Confirm booking</button>
+                {paymentSuccess && (
+                  <button type="button" className="booking-submit-btn" onClick={() => navigate('/my-rentals')}>
+                    View my rentals
+                  </button>
+                )}
                 <button type="button" className="booking-back-btn" onClick={() => navigate(`/listing/${listing.id}`, { state: { listing } })}>
                   Back to details
                 </button>
