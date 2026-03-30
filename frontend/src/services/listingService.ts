@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { CreateListingRequest, VehicleResponse, ListingCommand, ListingBatchResponse } from '../models/types/listing';
+import type { CreateListingRequest, VehicleResponse, ListingCommand, ListingBatchResponse, UpdateListingRequest } from '../models/types/listing';
 import { getToken } from '../store/authStore';
 
 const api = axios.create({ baseURL: '/api/listing' });
@@ -16,6 +16,26 @@ export async function getAvailableVehicles(): Promise<VehicleResponse[]> {
 
 export async function getMyVehicles(): Promise<VehicleResponse[]> {
   return api.get<VehicleResponse[]>('/my-listings').then((r) => r.data);
+}
+
+export async function getMyVehicleById(vehicleId: number): Promise<VehicleResponse> {
+  return api.get<VehicleResponse>(`/${vehicleId}`).then((r) => r.data);
+}
+
+export async function updateVehicle(vehicleId: number, data: UpdateListingRequest): Promise<VehicleResponse> {
+  const formData = new FormData();
+  if (data.name) formData.append('name', data.name);
+  if (data.description) formData.append('description', data.description);
+  if (data.address) formData.append('address', data.address);
+  if (data.hourlyRate) formData.append('hourlyRate', String(data.hourlyRate));
+  if (data.vehicleType) formData.append('vehicleType', data.vehicleType);
+  if (data.region) formData.append('region', data.region);
+  if (data.photo) formData.append('photo', data.photo);
+  return api.patch<VehicleResponse>(`/${vehicleId}`, formData).then((r) => r.data);
+}
+
+export async function removeVehicle(vehicleId: number): Promise<VehicleResponse> {
+  return api.delete<VehicleResponse>(`/${vehicleId}`).then((r) => r.data);
 }
 
 export async function createVehicle(data: CreateListingRequest): Promise<VehicleResponse> {

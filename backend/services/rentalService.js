@@ -1,4 +1,4 @@
-const { createRental, hasOverlappingRental, findRentalsByUserId, findRentalByIdForUser, returnRentalById } = require('../models/rentalModel');
+const { createRental, hasOverlappingRental, findRentalsByUserId, findRentalByIdForUser, returnRentalById, findRentalsByVehicleOwnerId } = require('../models/rentalModel');
 
 function generateUnlockCode(length = 6) {
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -68,7 +68,11 @@ async function returnRental(rentalId, renterId) {
   return updated;
 }
 
-module.exports = { createRentalBooking, getMyRentals, returnRental };
+async function getMyVehicleRentals(ownerId) {
+  return await findRentalsByVehicleOwnerId(ownerId);
+}
+
+module.exports = { createRentalBooking, getMyRentals, returnRental, getMyVehicleRentals };
 
 
 

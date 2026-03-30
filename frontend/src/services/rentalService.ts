@@ -23,6 +23,10 @@ export async function getMyRentals(): Promise<RentalRecord[]> {
   return api.get<RentalRecord[]>('/my-rentals').then((r) => r.data);
 }
 
+export async function getMyVehicleRentals(): Promise<RentalRecord[]> {
+  return api.get<RentalRecord[]>('/my-vehicles/rentals').then((r) => r.data);
+}
+
 export async function returnRental(rentalId: number): Promise<RentalRecord> {
   return api.patch<RentalRecord>(`/${rentalId}/return`).then((r) => r.data);
 }

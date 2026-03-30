@@ -74,3 +74,75 @@
     background: rgba(127, 0, 0, 0.8);
     color: #ffcdd2;
 }
+
+.user-analytics-section {
+  width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.user-analytics-section h3 {
+  color: rgb(226, 255, 236);
+  font-size: 24px;
+  margin: 0;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: bold;
+  color: white;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: rgb(200, 240, 215);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.available-text { color: #a5d6a7; }
+.rented-text    { color: #ef9a9a; }
+.earnings-text  { color: #80cbc4; }
+
+.listing-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.edit-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+
+.edit-btn:hover {
+  background: rgba(255, 255, 255, 0.28);
+}

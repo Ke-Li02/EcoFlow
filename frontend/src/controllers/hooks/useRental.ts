@@ -5,6 +5,7 @@ import type { VehicleResponse } from '../../models/types/listing';
 
 export function useRental() {
   const [rentals, setRentals] = useState<RentalRecord[]>([]);
+  const [vehicleRentals, setVehicleRentals] = useState<RentalRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -14,6 +15,20 @@ export function useRental() {
     try {
       const data = await rentalService.getMyRentals();
       setRentals(data);
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Failed to load rentals';
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function fetchMyVehicleRentals() {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await rentalService.getMyVehicleRentals();
+      setVehicleRentals(data);
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Failed to load rentals';
       setError(msg);
@@ -67,7 +82,7 @@ export function useRental() {
     }
   }
 
-  return { rentals, loading, error, fetchMyRentals, createMyRental, returnMyRental };
+  return { rentals, vehicleRentals, loading, error, fetchMyRentals, fetchMyVehicleRentals, createMyRental, returnMyRental };
 }
 
 

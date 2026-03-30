@@ -20,6 +20,15 @@ async function getMyRentalsHandler(req, res) {
   }
 }
 
+async function getMyVehicleRentalsHandler(req, res) {
+  try {
+    const rentals = await rentalService.getMyVehicleRentals(req.user.id);
+    res.status(200).json(rentals);
+  } catch (err) {
+    res.status(err.status || 500).json({ message: err.message || 'Failed to fetch rentals' });
+  }
+}
+
 async function returnRentalHandler(req, res) {
   const { id } = req.params;
 
@@ -31,6 +40,6 @@ async function returnRentalHandler(req, res) {
   }
 }
 
-module.exports = { createRentalHandler, getMyRentalsHandler, returnRentalHandler };
+module.exports = { createRentalHandler, getMyRentalsHandler, returnRentalHandler, getMyVehicleRentalsHandler };
 
 

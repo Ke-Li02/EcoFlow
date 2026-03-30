@@ -1,4 +1,4 @@
-const { getAvailableVehicles, findVehiclesByOwner, createVehicle } = require('../models/vehicleModel');
+const { getAvailableVehicles, findVehiclesByOwner, createVehicle, updateVehicleById, removeVehicleById, findVehicleByIdForOwner } = require('../models/vehicleModel');
 const { createOwnership } = require('../models/ownershipModel');
 const pool = require('./db');
 const AddVehicleCommand = require('./commands/AddVehicleCommand');
@@ -46,6 +46,19 @@ function buildListingCommand(operation) {
 async function createListing(name, description, available, address, photoPath, hourlyRate, owner, region, vehicleType) {
   const vehicle = await createVehicle(name, description, available, address, photoPath, hourlyRate, region, vehicleType);
   await createOwnership(vehicle.id, owner);
+  return vehicle;
+}
+
+async function updateListing(id, ownerId, updates) {
+  return await updateVehicleById(id, ownerId, updates);
+}
+
+async function removeListing(id, ownerId) {
+  return await removeVehicleById(id, ownerId);
+}
+
+async function findListingById(id, ownerId) {
+  return await findVehicleByIdForOwner(id, ownerId);
 }
 
 async function findListings(owner) {
@@ -85,5 +98,5 @@ async function executeListingCommands(operations, ownerId) {
   }
 }
 
-module.exports = { createListing, findListings, getAvailableListings, executeListingCommands };
+module.exports = { createListing, findListings, getAvailableListings, executeListingCommands, updateListing, removeListing, findListingById };
 
