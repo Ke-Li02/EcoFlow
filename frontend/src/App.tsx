@@ -6,6 +6,7 @@ import { isLoggedIn } from './store/authStore';
 import HomePage from './pages/HomePage';
 import Transit from './pages/Transit';
 import Parking from './pages/Parking';
+import Pannel from './pages/AdminPannel';
 import 'leaflet/dist/leaflet.css';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/home" element={<HomePage/>} />
         <Route path="/transit" element={<Transit/>} />
         <Route path="/parking" element={<Parking />} />
+        <Route path="/pannel" element={<Pannel />}/>
       </Routes>
     </BrowserRouter>
   );
