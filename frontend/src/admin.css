@@ -1,0 +1,94 @@
+.admin-container {
+    min-height: 100vh;
+    background: linear-gradient(
+        180deg,
+        #093815 0%,
+        #246f3d 40%,
+        #407955 70%,
+        #69b085 100%
+    );
+}
+
+.admin-content {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 30px;
+    flex-wrap: wrap;
+}
+
+.admin-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border-radius: 16px;
+    padding: 28px;
+    width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.admin-card h3 {
+    color: rgb(226, 255, 236);
+    font-size: 20px;
+    margin: 0;
+}
+
+.card-subtitle {
+    font-size: 13px;
+    color: rgb(180, 220, 195);
+    font-weight: normal;
+}
+
+.empty-text {
+    color: rgb(180, 220, 195);
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Bar chart */
+.bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 160px;
+    padding-bottom: 24px;
+    position: relative;
+}
+
+.bar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+    height: 100%;
+    position: relative;
+    gap: 4px;
+}
+
+.bar {
+    width: 100%;
+    background: rgba(100, 220, 140, 0.7);
+    border-radius: 4px 4px 0 0;
+    min-height: 4px;
+    transition: background 0.2s;
+}
+
+.bar-col:hover .bar {
+    background: rgba(100, 220, 140, 1);
+}
+
+.bar-count {
+    font-size: 10px;
+    color: rgb(200, 240, 215);
+}
+
+.bar-label {
+    position: absolute;
+    bottom: -20px;
+    font-size: 9px;
+    color: rgb(180, 220, 195);
+    white-space: nowrap;
+}
