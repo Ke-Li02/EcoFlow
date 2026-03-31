@@ -9,6 +9,7 @@ import MyRentalsPage from './pages/MyRentalsPage';
 import UserAnalyticsPage from './pages/UserAnalyticsPage';
 import Transit from './pages/Transit';
 import Parking from './pages/Parking';
+import RouteGuard from './guards/RouteGuard';
 import Pannel from './pages/AdminPannel';
 import RouteGuard from './guards/RouteGuard';
 import 'leaflet/dist/leaflet.css';
