@@ -14,8 +14,21 @@ export type RequestVolumeEntry = {
     count: number;
 };
 
+export type StatusCodeEntry = {
+    status_code: number;
+    count: number;
+};
+
+export type EndpointEntry = {
+    method: string;
+    path: string;
+    count: number;
+};
+
 export type AdminDashboardData = {
     requestVolume: RequestVolumeEntry[];
+    statusBreakdown: StatusCodeEntry[];
+    topEndpoints: EndpointEntry[];
 };
 
 export async function getAdminDashboard(): Promise<AdminDashboardData> {
