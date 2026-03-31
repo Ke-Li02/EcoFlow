@@ -1,0 +1,38 @@
+.loading-text {
+    color: rgb(200, 240, 215);
+    text-align: center;
+    padding: 40px;
+    font-size: 16px;
+}
+
+.existing-photo-preview {
+    width: 100%;
+    border-radius: 8px;
+    object-fit: cover;
+    max-height: 160px;
+    opacity: 0.85;
+}
+
+.delete-btn {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(220, 60, 60, 0.5);
+    background: transparent;
+    color: #ff8a80;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    width: 100%;
+}
+
+.delete-btn:hover {
+    background: rgba(180, 0, 0, 0.2);
+    border-color: rgba(220, 60, 60, 0.8);
+}
+
+.delete-btn.delete-confirm {
+    background: rgba(127, 0, 0, 0.4);
+    border-color: #e53935;
+    color: #ffcdd2;
+    font-weight: bold;
+}

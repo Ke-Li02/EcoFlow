@@ -103,7 +103,21 @@ async function returnRentalById(rentalId, userId, executor = pool) {
   return rows[0] ?? null;
 }
 
-module.exports = { createRentalsTable, createRental, hasOverlappingRental, findRentalsByUserId, findRentalByIdForUser, returnRentalById };
+async function findRentalsByVehicleOwnerId(userId, executor = pool) {
+  const { rows } = await executor.query(
+    `SELECT ${RENTAL_SELECT}
+     FROM rentals r
+     JOIN vehicles v ON v.id = r.vehicle_id
+     JOIN ownerships o ON o.vehicle_id = v.id
+     WHERE o.owner_id = $1
+     ORDER BY r.start_time DESC`,
+    [userId]
+  );
+
+  return rows;
+}
+
+module.exports = { createRentalsTable, createRental, hasOverlappingRental, findRentalsByUserId, findRentalByIdForUser, returnRentalById, findRentalsByVehicleOwnerId };
 
 
 

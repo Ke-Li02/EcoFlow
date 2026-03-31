@@ -9,6 +9,16 @@ export interface CreateListingRequest {
     region: string;
 }
 
+export type UpdateListingRequest = {
+    name?: string;
+    description?: string;
+    address?: string;
+    hourlyRate?: number;
+    vehicleType?: VehicleTypeValue;
+    region?: RegionValue;
+    photo?: File;
+};
+
 export interface VehicleResponse {
     id: number;
     name: string;

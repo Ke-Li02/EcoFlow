@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import * as listingService from '../../services/listingService';
-import type { VehicleResponse, CreateListingRequest, ListingCommand, ListingBatchResponse } from '../../models/types/listing';
+import type { VehicleResponse, CreateListingRequest, ListingCommand, ListingBatchResponse, UpdateListingRequest } from '../../models/types/listing';
 
 export function useListing() {
   const [listings, setListings] = useState<VehicleResponse[]>([]);
@@ -28,6 +28,49 @@ export function useListing() {
     try {
       const data = await listingService.getMyVehicles();
       setMyListings(data);
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Failed to fetch your listings';
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function updateListing(id: number, data: UpdateListingRequest): Promise<boolean> {
+    setLoading(true);
+    setError(null);
+    try {
+      await listingService.updateVehicle(id, data);
+      return true;
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Failed to update listing';
+      setError(msg);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function deleteListing(id: number): Promise<boolean> {
+    setLoading(true);
+    setError(null);
+    try {
+      await listingService.removeVehicle(id);
+      return true;
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Failed to remove listing';
+      setError(msg);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function fetchListingById(id: number) {
+    setLoading(true);
+    setError(null);
+    try {
+      return await listingService.getMyVehicleById(id);
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message ?? 'Failed to fetch your listings';
       setError(msg);
@@ -65,5 +108,5 @@ export function useListing() {
     }
   }
 
-  return { listings, myListings, loading, error, fetchAvailableListings, fetchMyListings, createListing, executeBatchCommands };
+  return { listings, myListings, loading, error, fetchAvailableListings, fetchMyListings, createListing, fetchListingById, updateListing, deleteListing, executeBatchCommands };
 }

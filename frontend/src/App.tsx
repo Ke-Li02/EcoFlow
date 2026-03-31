@@ -6,12 +6,14 @@ import HomePage from './pages/HomePage';
 import ListingDetailsPage from './pages/ListingDetailsPage';
 import BookingPage from './pages/BookingPage';
 import MyRentalsPage from './pages/MyRentalsPage';
-import AnalyticsPage from './pages/AnalyticsPage';
+import UserAnalyticsPage from './pages/UserAnalyticsPage';
 import Transit from './pages/Transit';
 import Parking from './pages/Parking';
 import RouteGuard from './guards/RouteGuard';
 import Pannel from './pages/AdminPannel';
+import RouteGuard from './guards/RouteGuard';
 import 'leaflet/dist/leaflet.css';
+import EditListingPage from './pages/EditListingPage';
 
 export default function App() {
   return (
@@ -24,11 +26,11 @@ export default function App() {
         <Route path="/booking/:id" element={<RouteGuard guardType="auth"><BookingPage /></RouteGuard>} />
         <Route path="/my-rentals" element={<RouteGuard guardType="auth"><MyRentalsPage /></RouteGuard>} />
         <Route path="/provide" element={<RouteGuard guardType="auth"><ProvidePage /></RouteGuard>} />
-        <Route path="/analytics" element={<RouteGuard guardType="admin"><AnalyticsPage /></RouteGuard>} />
+        <Route path="/analytics" element={<RouteGuard guardType="admin" redirect={<UserAnalyticsPage />}><Pannel /></RouteGuard>} />
+        <Route path="/edit-listing/:id" element={<RouteGuard guardType="auth"><EditListingPage /></RouteGuard>} />
         <Route path="*" element={<Navigate to="/login" replace />} />
         <Route path="/transit" element={<Transit/>} />
         <Route path="/parking" element={<Parking />} />
-        <Route path="/pannel" element={<Pannel />}/>
       </Routes>
     </BrowserRouter>
   );

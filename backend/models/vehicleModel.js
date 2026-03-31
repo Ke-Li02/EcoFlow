@@ -57,24 +57,25 @@ async function createVehiclesTable() {
       hourly_rate DECIMAL(10,2) NOT NULL,
       region region_type NOT NULL,
       vehicle_type vehicle_type NOT NULL,
+      deleted boolean DEFAULT FALSE,
       created_at TIMESTAMPTZ DEFAULT NOW()
     )
   `);
 }
 
 async function findVehiclesByOwner(owner) {
-  const { rows } = await pool.query(`SELECT ${VEHICLE_SELECT} FROM vehicles v JOIN ownerships o ON v.id = o.vehicle_id WHERE o.owner_id = $1`, [owner]);
+  const { rows } = await pool.query(`SELECT ${VEHICLE_SELECT} FROM vehicles v JOIN ownerships o ON v.id = o.vehicle_id WHERE o.owner_id = $1 AND NOT deleted`, [owner]);
   return rows;
 }
 
 async function getAvailableVehicles() {
-  const { rows } = await pool.query('SELECT id, name, description, available, address, photo_path AS "photoPath", hourly_rate::FLOAT AS "hourlyRate", region, vehicle_type AS "vehicleType" FROM vehicles WHERE available = TRUE;');
+  const { rows } = await pool.query('SELECT id, name, description, available, address, photo_path AS "photoPath", hourly_rate::FLOAT AS "hourlyRate", region, vehicle_type AS "vehicleType" FROM vehicles WHERE available = TRUE AND NOT deleted;');
   return rows;
 }
 
 async function findVehicleByIdForOwner(vehicleId, ownerId, executor = pool) {
   const { rows } = await executor.query(
-    `SELECT ${VEHICLE_SELECT} FROM vehicles v JOIN ownerships o ON v.id = o.vehicle_id WHERE v.id = $1 AND o.owner_id = $2`,
+    `SELECT ${VEHICLE_SELECT} FROM vehicles v JOIN ownerships o ON v.id = o.vehicle_id WHERE v.id = $1 AND o.owner_id = $2 AND NOT deleted`,
     [vehicleId, ownerId]
   );
 
@@ -125,6 +126,7 @@ async function updateVehicleById(vehicleId, ownerId, updates, executor = pool) {
        WHERE v.id = o.vehicle_id
          AND v.id = $${entries.length + 1}
          AND o.owner_id = $${entries.length + 2}
+         AND NOT deleted
        RETURNING ${VEHICLE_SELECT}`,
       values
     );
@@ -140,18 +142,36 @@ async function updateVehicleById(vehicleId, ownerId, updates, executor = pool) {
 }
 
 async function removeVehicleById(vehicleId, ownerId, executor = pool) {
-  const ownershipResult = await executor.query(
-    'DELETE FROM ownerships WHERE vehicle_id = $1 AND owner_id = $2 RETURNING vehicle_id',
+  // Check for ongoing/future rentals first
+  const { rows: rentalRows } = await executor.query(
+    `SELECT 1 FROM rentals r
+      JOIN ownerships o ON o.vehicle_id = r.vehicle_id
+      WHERE r.vehicle_id = $1
+        AND o.owner_id = $2
+        AND r.end_time > NOW()
+      LIMIT 1`,
     [vehicleId, ownerId]
   );
 
-  if (ownershipResult.rowCount === 0) {
-    return null;
+  if (rentalRows.length > 0) {
+    throw { status: 409, message: 'Cannot delete a vehicle with ongoing or upcoming rentals.' };
   }
 
   const { rows } = await executor.query(
-    `DELETE FROM vehicles WHERE id = $1 RETURNING id`,
-    [vehicleId]
+    ` UPDATE vehicles v
+      SET deleted = TRUE
+      FROM ownerships o
+      WHERE v.id = o.vehicle_id
+        AND v.id = $1
+        AND o.owner_id = $2
+        AND NOT v.deleted
+        AND NOT EXISTS (
+          SELECT 1 FROM rentals r
+          WHERE r.vehicle_id = $1
+            AND r.end_time > NOW()
+        )
+      RETURNING v.id`,
+    [vehicleId, ownerId]
   );
 
   return rows[0] ?? null;
