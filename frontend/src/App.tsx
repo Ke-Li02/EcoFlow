@@ -10,6 +10,7 @@ import AnalyticsPage from './pages/AnalyticsPage';
 import Transit from './pages/Transit';
 import Parking from './pages/Parking';
 import RouteGuard from './guards/RouteGuard';
+import Pannel from './pages/AdminPannel';
 import 'leaflet/dist/leaflet.css';
 
 export default function App() {
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="*" element={<Navigate to="/login" replace />} />
         <Route path="/transit" element={<Transit/>} />
         <Route path="/parking" element={<Parking />} />
+        <Route path="/pannel" element={<Pannel />}/>
       </Routes>
     </BrowserRouter>
   );
