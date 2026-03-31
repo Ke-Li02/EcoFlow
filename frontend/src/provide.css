@@ -80,6 +80,41 @@
     background: #1b5e20;
 }
 
+.actions-row {
+    display: flex;
+    gap: 10px;
+}
+
+.actions-row .submit-btn,
+.actions-row .cancel-btn {
+    flex: 1;
+}
+
+.cancel-btn {
+    margin-top: 8px;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    background: transparent;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.draft-note {
+    margin: 0;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #eaffef;
+    background: rgba(18, 78, 42, 0.55);
+}
+
 .form-group select {
     padding: 10px;
     border-radius: 8px;

@@ -11,8 +11,8 @@ async function createOwnershipsTable() {
   `);
 }
 
-async function createOwnership(vehicle, owner) {
-  const { rows } = await pool.query(
+async function createOwnership(vehicle, owner, executor = pool) {
+  const { rows } = await executor.query(
     'INSERT INTO ownerships (vehicle_id, owner_id) VALUES ($1, $2) RETURNING id',
     [vehicle, owner]
   );

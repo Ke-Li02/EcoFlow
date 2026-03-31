@@ -30,5 +30,19 @@ async function getAvailableListingsHandler(req, res) {
   }
 }
 
-module.exports = { createListingHandler, getMyListingsHandler, getAvailableListingsHandler };
+async function executeListingCommandsHandler(req, res) {
+  const { operations } = req.body;
+  if (!Array.isArray(operations)) {
+    return res.status(400).json({ message: 'operations must be an array' });
+  }
+
+  try {
+    const results = await listingService.executeListingCommands(operations, req.user.id);
+    res.status(200).json({ processed: results.length, results });
+  } catch (err) {
+    res.status(err.status || 500).json({ message: err.message || 'Failed to execute listing commands' });
+  }
+}
+
+module.exports = { createListingHandler, getMyListingsHandler, getAvailableListingsHandler, executeListingCommandsHandler };
 

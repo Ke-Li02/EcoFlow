@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { CreateListingRequest, VehicleResponse } from '../models/types/listing';
+import type { CreateListingRequest, VehicleResponse, ListingCommand, ListingBatchResponse } from '../models/types/listing';
 import { getToken } from '../store/authStore';
 
 const api = axios.create({ baseURL: '/api/listing' });
@@ -29,3 +29,8 @@ export async function createVehicle(data: CreateListingRequest): Promise<Vehicle
   formData.append('region', data.region);
   return api.post<VehicleResponse>('/create', formData).then((r) => r.data);
 }
+
+export async function executeListingCommands(operations: ListingCommand[]): Promise<ListingBatchResponse> {
+  return api.post<ListingBatchResponse>('/batch', { operations }).then((r) => r.data);
+}
+
