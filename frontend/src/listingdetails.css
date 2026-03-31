@@ -1,0 +1,85 @@
+.listing-details-page {
+  min-height: 100vh;
+  background-color: #f5fff8;
+}
+
+.listing-details-wrapper {
+  max-width: 1000px;
+  margin: 24px auto;
+  padding: 0 16px 24px;
+}
+
+.listing-details-card {
+  background-color: #d9f1e0;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 18px;
+}
+
+.listing-photo {
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.listing-meta {
+  margin-top: 16px;
+  color: #15361c;
+}
+
+.listing-meta h1 {
+  margin: 0 0 8px;
+}
+
+.listing-details-page .listing-price {
+  font-size: 1.15rem;
+  font-weight: bold;
+  margin: 0 0 14px;
+  color: #000000;
+  background-color: #ffffff;
+  border-radius: 999px;
+  padding: 4px 10px;
+  display: inline-block;
+}
+
+.listing-back-btn {
+  margin-top: 12px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  background-color: #35c9d4;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.listing-book-btn {
+  margin-top: 6px;
+  margin-right: 10px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  background-color: #1c6f2f;
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.listing-book-btn:hover {
+  background-color: #145123;
+}
+
+.listing-back-btn:hover {
+  background-color: rgb(0, 140, 145);
+}
+
+.listing-details-page .listing-status {
+  color: #15361c;
+  font-weight: 600;
+}
+
+.listing-details-page .listing-status.error {
+  color: #9d1f1f;
+}
+
+

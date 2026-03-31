@@ -1,0 +1,125 @@
+.my-rentals-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #093815 0%, #246f3d 45%, #407955 75%, #69b085 100%);
+}
+
+.my-rentals-container {
+  max-width: 1200px;
+  margin: 20px auto 0;
+  padding: 0 16px 30px;
+}
+
+.my-rentals-title {
+  text-align: center;
+  margin-top: 20px;
+  color: rgb(226, 255, 236);
+  font-size: 56px;
+}
+
+.my-rentals__status-text {
+  color: rgb(226, 255, 236);
+  font-weight: 600;
+}
+
+.my-rentals__status-text--error {
+  color: #ffd8d8;
+}
+
+.my-rentals__section {
+  margin-top: 22px;
+}
+
+.my-rentals__section-title {
+  margin-bottom: 10px;
+  color: rgb(226, 255, 236);
+}
+
+.my-rentals__table-wrapper {
+  overflow-x: auto;
+}
+
+.my-rentals__table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #11361e;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+}
+
+.my-rentals__table th,
+.my-rentals__table td {
+  padding: 10px;
+  border-bottom: 1px solid #1f5631;
+  text-align: left;
+  color: #e7ffee;
+  vertical-align: middle;
+}
+
+.my-rentals__table th {
+  background-color: #0c2b18;
+}
+
+.my-rentals__item-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.my-rentals__item-cell img {
+  width: 48px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.my-rentals__status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.my-rentals__status--past {
+  background-color: #d6d6d6;
+  color: #2f2f2f;
+}
+
+.my-rentals__status--current {
+  background-color: #b4f2c3;
+  color: #11461f;
+}
+
+.my-rentals__status--future {
+  background-color: #cde8ff;
+  color: #0d4c88;
+}
+
+.my-rentals__empty-row {
+  text-align: center;
+  font-style: italic;
+}
+
+.my-rentals__return-btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #35c9d4;
+  color: #062d31;
+}
+
+.my-rentals__return-btn:hover {
+  background-color: #2ab2bc;
+}
+
+.my-rentals__return-btn:disabled {
+  background-color: #97a6a8;
+  color: #223335;
+  cursor: not-allowed;
+}
+
+
+

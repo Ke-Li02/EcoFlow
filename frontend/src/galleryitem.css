@@ -5,7 +5,18 @@
     width: 220px;
     text-align: center;
     box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 
+}
+
+.gallery-item-clickable{
+    cursor: pointer;
+}
+
+.gallery-item-clickable:hover,
+.gallery-item-clickable:focus-visible{
+    transform: scale(1.02);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
 }
 
 .gallery-item img{

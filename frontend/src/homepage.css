@@ -27,3 +27,10 @@ body{
     flex-wrap: wrap;
     margin-top: 30px;
 }
+
+.gallery-placeholder{
+    color: rgb(226, 255, 236);
+    font-size: 20px;
+    text-align: center;
+    width: 100%;
+}

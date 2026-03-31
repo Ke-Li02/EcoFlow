@@ -53,12 +53,12 @@
     font-weight: bold;
 }
 
-.listing-price {
+.analytics-container .listing-price {
     color: rgb(200, 240, 215);
     font-size: 14px;
 }
 
-.listing-status {
+.analytics-container .listing-status {
     padding: 6px 12px;
     border-radius: 20px;
     font-size: 13px;

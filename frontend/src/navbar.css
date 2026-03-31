@@ -13,6 +13,15 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+.logo-link{
+    text-decoration: none;
+}
+
+.logo-link:hover .logo,
+.logo-link:focus-visible .logo{
+    color: #0c3d23;
+}
+
 .nav-links a {
     margin-left:25px;
     color: white;
