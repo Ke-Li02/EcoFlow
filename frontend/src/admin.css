@@ -92,3 +92,94 @@
     color: rgb(180, 220, 195);
     white-space: nowrap;
 }
+
+/* Status breakdown */
+.status-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.status-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status-badge {
+    font-size: 12px;
+    font-weight: bold;
+    color: #0a1f0f;
+    padding: 3px 8px;
+    border-radius: 6px;
+    min-width: 40px;
+    text-align: center;
+}
+
+.status-bar-track {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.status-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.4s ease;
+}
+
+.status-count {
+    font-size: 13px;
+    color: rgb(200, 240, 215);
+    min-width: 30px;
+    text-align: right;
+}
+
+/* Top endpoints */
+.endpoint-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.endpoint-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+.method-badge {
+    font-size: 11px;
+    font-weight: bold;
+    padding: 3px 7px;
+    border-radius: 5px;
+    min-width: 52px;
+    text-align: center;
+}
+
+.method-get    { background: rgba(100, 200, 255, 0.25); color: #90caf9; }
+.method-post   { background: rgba(100, 220, 140, 0.25); color: #a5d6a7; }
+.method-patch  { background: rgba(255, 200, 80, 0.25);  color: #ffe082; }
+.method-delete { background: rgba(255, 100, 100, 0.25); color: #ef9a9a; }
+
+.endpoint-path {
+    flex: 1;
+    font-size: 13px;
+    color: white;
+    font-family: monospace;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.endpoint-count {
+    font-size: 13px;
+    color: rgb(200, 240, 215);
+    min-width: 30px;
+    text-align: right;
+}

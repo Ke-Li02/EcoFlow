@@ -40,4 +40,32 @@ async function getLogRequestVolume() {
     return rows;
 }
 
-module.exports = { createRequestLogsTable, logRequest, getLogRequestVolume };
+async function getStatusCodeBreakdown() {
+    const { rows } = await pool.query(`
+        SELECT
+            status_code,
+            COUNT(*)::INT AS count
+        FROM request_logs
+        WHERE created_at > NOW() - INTERVAL '24 hours'
+        GROUP BY status_code
+        ORDER BY status_code ASC
+    `);
+    return rows;
+}
+
+async function getTopEndpoints() {
+    const { rows } = await pool.query(`
+        SELECT
+            method,
+            path,
+            COUNT(*)::INT AS count
+        FROM request_logs
+        WHERE created_at > NOW() - INTERVAL '24 hours'
+        GROUP BY method, path
+        ORDER BY count DESC
+        LIMIT 10
+    `);
+    return rows;
+}
+
+module.exports = { createRequestLogsTable, logRequest, getLogRequestVolume, getStatusCodeBreakdown, getTopEndpoints };
