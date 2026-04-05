@@ -1,7 +1,8 @@
-import { adaptOrsDirections, adaptOrsGeocode, adaptOverpassStations, adaptTransitlandStops } from '../adapters/mapApiAdapter';
-import type { ChargingStation, PlaceSuggestion, RouteResult, TransitStop } from '../models/types/map';
+import { adaptBixiStations, adaptGbfsFeedUrls, adaptOrsDirections, adaptOrsGeocode, adaptOverpassStations, adaptTransitlandStops } from '../adapters/mapApiAdapter';
+import type { BixiStation, ChargingStation, PlaceSuggestion, RouteResult, TransitStop } from '../models/types/map';
 
 const STM_OPERATOR = 'o-f25d-socitdetransportdemontral';
+const BIXI_GBFS_DISCOVERY_URL = 'https://gbfs.velobixi.com/gbfs/2-2/gbfs.json';
 
 export const OVERPASS_QUERY = `
 [out:json][timeout:25];
@@ -74,3 +75,28 @@ export async function getChargingStations(query = OVERPASS_QUERY): Promise<Charg
   return adaptOverpassStations(data);
 }
 
+export async function getBixiStations(): Promise<BixiStation[]> {
+  const discoveryResponse = await fetch(BIXI_GBFS_DISCOVERY_URL);
+  if (!discoveryResponse.ok) {
+    throw new Error(`Bixi GBFS discovery request failed (${discoveryResponse.status})`);
+  }
+
+  const discoveryData = await discoveryResponse.json();
+  const { stationInformationUrl, stationStatusUrl } = adaptGbfsFeedUrls(discoveryData);
+
+  const [stationInformationResponse, stationStatusResponse] = await Promise.all([
+    fetch(stationInformationUrl),
+    fetch(stationStatusUrl),
+  ]);
+
+  if (!stationInformationResponse.ok || !stationStatusResponse.ok) {
+    throw new Error('Failed to fetch Bixi station data.');
+  }
+
+  const [stationInformationData, stationStatusData] = await Promise.all([
+    stationInformationResponse.json(),
+    stationStatusResponse.json(),
+  ]);
+
+  return adaptBixiStations(stationInformationData, stationStatusData);
+}

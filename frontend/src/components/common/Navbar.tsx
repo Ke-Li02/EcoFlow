@@ -14,6 +14,7 @@ export default function Navbar(){
                 <Link to="/my-rentals">🗓️My Rentals</Link>
                 <Link to="/transit">🚉STM Transit Routes</Link>
                 <Link to="/parking">🔌Charging EV Parking Stations</Link>
+                <Link to="/bixi">🚲Bixi Stations</Link>
                 <Link to="/provide">📋Offer an item to rent</Link>
                 <Link to="/analytics">📊Analytics</Link>
                 <Link to="/login" onClick={clearToken}>👋Sign Out</Link>
