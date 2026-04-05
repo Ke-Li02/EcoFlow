@@ -31,3 +31,23 @@ export interface ChargingStation {
   access: string;
 }
 
+export interface BixiFeedUrls {
+  stationInformationUrl: string;
+  stationStatusUrl: string;
+}
+
+export interface BixiStation {
+  id: string;
+  name: string;
+  lat: number;
+  lon: number;
+  address: string;
+  capacity: number | null;
+  numBikesAvailable: number;
+  numEbikesAvailable: number;
+  numDocksAvailable: number;
+  isInstalled: boolean;
+  isRenting: boolean;
+  isReturning: boolean;
+  lastReported: number | null;
+}

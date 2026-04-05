@@ -10,6 +10,7 @@ import UserAnalyticsPage from './pages/UserAnalyticsPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import Transit from './pages/Transit';
 import Parking from './pages/Parking';
+import Bixi from './pages/Bixi';
 import RouteGuard from './guards/RouteGuard';
 import 'leaflet/dist/leaflet.css';
 import EditListingPage from './pages/EditListingPage';
@@ -27,9 +28,10 @@ export default function App() {
         <Route path="/provide" element={<RouteGuard guardType="auth"><ProvidePage /></RouteGuard>} />
         <Route path="/analytics" element={<RouteGuard guardType="admin" redirect={<UserAnalyticsPage />}><AdminDashboardPage /></RouteGuard>} />
         <Route path="/edit-listing/:id" element={<RouteGuard guardType="auth"><EditListingPage /></RouteGuard>} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
         <Route path="/transit" element={<Transit/>} />
         <Route path="/parking" element={<Parking />} />
+        <Route path="/bixi" element={<Bixi />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
   );
