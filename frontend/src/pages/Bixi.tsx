@@ -9,6 +9,8 @@ import "../bixi.css";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
+const BIXI_MAP_URL = "https://secure.bixi.com/map?_ga=2.196191848.512126552.1678384477-1487072426.1668805532";
+
 delete ((L.Icon.Default.prototype as unknown) as Record<string, unknown>)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconUrl: markerIcon,
@@ -101,6 +103,16 @@ export default function Bixi() {
                   <div>Docks available: {station.numDocksAvailable}</div>
                   <div>Capacity: {station.capacity ?? "N/A"}</div>
                   <div>Status: {station.isRenting ? "Renting enabled" : "Renting unavailable"}</div>
+                  <div style={{ marginTop: "6px" }}>
+                    <a
+                      href={BIXI_MAP_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ fontSize: "12px", color: "#0b6bcb" }}
+                    >
+                      Bixi site
+                    </a>
+                  </div>
                 </div>
               </Popup>
             </Marker>
