@@ -1,4 +1,4 @@
-import type { ChargingStation, PlaceSuggestion, RouteResult, TransitStop } from '../models/types/map';
+import type { BixiFeedUrls, BixiStation, ChargingStation, PlaceSuggestion, RouteResult, TransitStop } from '../models/types/map';
 
 interface OrsGeocodeFeature {
   properties: { label: string };
@@ -48,6 +48,54 @@ interface OverpassElement {
 
 interface OverpassResponse {
   elements?: OverpassElement[];
+}
+
+interface GbfsFeed {
+  name: string;
+  url: string;
+}
+
+interface GbfsLanguageData {
+  feeds?: GbfsFeed[];
+}
+
+interface GbfsDiscoveryResponse {
+  data?: {
+    en?: GbfsLanguageData;
+    fr?: GbfsLanguageData;
+  };
+}
+
+interface BixiStationInformation {
+  station_id: string;
+  name: string;
+  lat: number;
+  lon: number;
+  address?: string;
+  capacity?: number;
+}
+
+interface BixiStationStatus {
+  station_id: string;
+  num_bikes_available?: number;
+  num_ebikes_available?: number;
+  num_docks_available?: number;
+  is_installed?: number;
+  is_renting?: number;
+  is_returning?: number;
+  last_reported?: number;
+}
+
+interface BixiStationInformationResponse {
+  data?: {
+    stations?: BixiStationInformation[];
+  };
+}
+
+interface BixiStationStatusResponse {
+  data?: {
+    stations?: BixiStationStatus[];
+  };
 }
 
 export function adaptOrsGeocode(data: unknown): PlaceSuggestion[] {
@@ -116,3 +164,44 @@ export function adaptOverpassStations(data: unknown): ChargingStation[] {
     .filter((station): station is ChargingStation => station !== null);
 }
 
+export function adaptGbfsFeedUrls(data: unknown): BixiFeedUrls {
+  const response = data as GbfsDiscoveryResponse;
+  const feeds = response.data?.en?.feeds ?? response.data?.fr?.feeds ?? [];
+  const stationInformationUrl = feeds.find((feed) => feed.name === 'station_information')?.url;
+  const stationStatusUrl = feeds.find((feed) => feed.name === 'station_status')?.url;
+
+  if (!stationInformationUrl || !stationStatusUrl) {
+    throw new Error('Bixi GBFS feed is missing station information or status URLs.');
+  }
+
+  return { stationInformationUrl, stationStatusUrl };
+}
+
+export function adaptBixiStations(stationInformationData: unknown, stationStatusData: unknown): BixiStation[] {
+  const stationInformation = (stationInformationData as BixiStationInformationResponse).data?.stations ?? [];
+  const stationStatuses = (stationStatusData as BixiStationStatusResponse).data?.stations ?? [];
+
+  const statusById = new Map(stationStatuses.map((status) => [status.station_id, status]));
+
+  return stationInformation
+    .map((station): BixiStation => {
+      const status = statusById.get(station.station_id);
+
+      return {
+        id: station.station_id,
+        name: station.name,
+        lat: station.lat,
+        lon: station.lon,
+        address: station.address ?? 'Montreal, QC',
+        capacity: station.capacity ?? null,
+        numBikesAvailable: status?.num_bikes_available ?? 0,
+        numEbikesAvailable: status?.num_ebikes_available ?? 0,
+        numDocksAvailable: status?.num_docks_available ?? 0,
+        isInstalled: status?.is_installed === 1,
+        isRenting: status?.is_renting === 1,
+        isReturning: status?.is_returning === 1,
+        lastReported: status?.last_reported ?? null,
+      };
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
