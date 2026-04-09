@@ -7,6 +7,12 @@ import { useRental } from '../controllers/hooks/useRental';
 import type { VehicleResponse } from '../models/types/listing';
 import { getListingImageSrc } from '../utils/listingMedia';
 import '../booking.css';
+import emailjs from '@emailjs/browser';
+
+//EmailJS keys
+const EMAILJS_SERVICE_ID = 'service_y11edji';
+const EMAILJS_TEMPLATE_ID = 'template_j9vwamr';
+const EMAILJS_PUBLIC_KEY = 'EU1TRthi4MvBj0CYF';
 
 type BookingRouteState = {
   listing?: VehicleResponse;
@@ -92,6 +98,36 @@ export default function BookingPage() {
 
     return null;
   }
+
+  //EmailJS sender
+  async function sendConfirmationEmail() {
+  if (!listing) return;
+
+  // Simulate a cryptographic NFC unlock key
+  const rawSeed = `${listing.id}-${email.trim()}-${startDateTime}-${endDateTime}-${Date.now()}`;
+  const encodedSeed = btoa(unescape(encodeURIComponent(rawSeed))); //base64 encoding
+  // XOR-scramble 
+  const keyBytes = encodedSeed
+    .split('')
+    .map((char, i) => (char.charCodeAt(0) ^ (0xA3 + i * 0x07)).toString(16).padStart(2, '0'))
+    .join('');
+  const formattedKey = keyBytes.match(/.{1,8}/g)?.join('-') ?? keyBytes; //some formatting
+  const keyFileContent = `ECOFLOW-NFC-KEY-V1\n${formattedKey}`;
+  const base64Attachment = btoa(unescape(encodeURIComponent(keyFileContent)));
+
+  const templateParams = {
+    email: email.trim(),
+    attachment: base64Attachment,
+    attachment_name: 'ecoflow-key.txt',
+  };
+
+  await emailjs.send(
+    EMAILJS_SERVICE_ID,
+    EMAILJS_TEMPLATE_ID,
+    templateParams,
+    EMAILJS_PUBLIC_KEY,
+  );
+}
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
