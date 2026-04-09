@@ -1,13 +1,4 @@
-// line below used instead to fix error require('dotenv').config();
-require('dotenv').config({ path: require('path').resolve(__dirname, '.env') });
-// TEMP DEBUG - remove after fixing
-console.log('DB CONFIG:', {
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD ? '***SET***' : 'UNDEFINED',
-  database: process.env.DB_NAME,
-});
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('node:path');

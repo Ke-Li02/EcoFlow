@@ -6,9 +6,8 @@ services:
       POSTGRES_USER: ecoflow
       POSTGRES_PASSWORD: ecoflow_pass
       POSTGRES_DB: ecoflow_db
-      POSTGRES_HOST_AUTH_METHOD: md5    # ← added this
     ports:
-      - "5433:5432" # instead of 5432:5432
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
