@@ -154,6 +154,7 @@ export default function BookingPage() {
 
     setFormError(null);
     setPaymentSuccess(true);
+    await sendConfirmationEmail(); //sending the email
   }
 
   if (!Number.isFinite(listingId)) {
