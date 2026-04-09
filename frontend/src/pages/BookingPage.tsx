@@ -27,6 +27,7 @@ export default function BookingPage() {
   const [cvv, setCvv] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [email, setEmail] = useState('');
 
   const listingId = Number(id);
   const routeState = location.state as BookingRouteState | null;
@@ -61,6 +62,10 @@ export default function BookingPage() {
   }, [estimatedHours, listing]);
 
   function validateForm() {
+    //make sure that the email is valid
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      return 'Please enter a valid email address.';
+    }
     if (!listing) return 'Listing not found.';
     if (!startDateTime || !endDateTime) return 'Please select start and end date/time.';
 
@@ -184,6 +189,17 @@ export default function BookingPage() {
                   type="datetime-local"
                   value={endDateTime}
                   onChange={(event) => setEndDateTime(event.target.value)}
+                />
+              </div>
+
+              <div className="booking-field">
+                <label htmlFor="booking-email">Email address</label>
+                <input
+                  id="booking-email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
                 />
               </div>
 
