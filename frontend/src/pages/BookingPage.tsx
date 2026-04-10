@@ -12,7 +12,7 @@ import emailjs from '@emailjs/browser';
 //EmailJS keys
 const EMAILJS_SERVICE_ID = 'service_y11edji';
 const EMAILJS_TEMPLATE_ID = 'template_j9vwamr';
-const EMAILJS_PUBLIC_KEY = 'EU1TRthi4MvBj0CYF';
+const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 type BookingRouteState = {
   listing?: VehicleResponse;
@@ -129,6 +129,43 @@ export default function BookingPage() {
   );
 }
 
+//direct browser key download due to emailJS restrictions
+  function downloadKeyFile(content: string) {
+  const blob = new Blob([content], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'ecoflow-key.txt';
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+//helper
+function generateKeyFileContent(
+  listingId: number,
+  email: string,
+  startDateTime: string,
+  endDateTime: string
+) {
+  const rawSeed = `${listingId}-${email.trim()}-${startDateTime}-${endDateTime}-${Date.now()}`;
+  const encodedSeed = btoa(unescape(encodeURIComponent(rawSeed)));
+
+  const keyBytes = encodedSeed
+    .split('')
+    .map((char, i) =>
+      (char.charCodeAt(0) ^ (0xA3 + i * 0x07))
+        .toString(16)
+        .padStart(2, '0')
+    )
+    .join('');
+
+  const formattedKey = keyBytes.match(/.{1,8}/g)?.join('-') ?? keyBytes;
+
+  return `ECOFLOW-NFC-KEY-V1\n${formattedKey}`;
+}
+
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const nextError = validateForm();
@@ -155,6 +192,18 @@ export default function BookingPage() {
     setFormError(null);
     setPaymentSuccess(true);
     await sendConfirmationEmail(); //sending the email
+    const keyFileContent = generateKeyFileContent(
+  listing.id,
+  email,
+  startDateTime,
+  endDateTime
+);
+
+//trigger download
+downloadKeyFile(keyFileContent);
+
+// keep email if you want
+await sendConfirmationEmail();
   }
 
   if (!Number.isFinite(listingId)) {
