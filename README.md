@@ -1,4 +1,11 @@
 # EcoFlow
+## Teammates
+| Name | ID| Github username |
+| -----------------|----------------------- | --------------- |
+| Jovan Gavranovic | 40282175 | jGavranovic |
+| Jeslyn Sorotsky | 40277100 | JenLys |
+| Kevin Liu | 40281197 |  Ke-Li02 |
+| Kevin Ung | 40259218  | Pengukev |
 
 ## Requirements
 
